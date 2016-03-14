@@ -25,8 +25,11 @@ def compute_pca(X):
     # print np.transpose(normalised_data)
 
     # print np.shape(X), np.shape(np.transpose(X)), np.shape(np.dot(np.transpose(X), X))
+
+    # Compute eig of covariance matrix (vectorised)
     evals, evecs = np.linalg.eig(np.dot(np.transpose(normalised_data), normalised_data) / float(m))
 
+    # Sort eigenvectors
     idx = evals.argsort()[::-1]
     eigenValues = evals[idx]
     eigenVectors = evecs[:, idx]
@@ -48,6 +51,7 @@ def compute_pca(X):
 
     # print(np.mean(X, axis=0))
 
-compute_pca(data['train_features'])
+    return eigenVectors, eigenValues
+
 # print mean_normalise(data['train_features'])
 # compute_pca(data['train_features'])
