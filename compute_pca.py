@@ -37,32 +37,24 @@ def compute_pca(X):
     # evals, evecs = np.linalg.eig(np.cov(normalised_data, rowvar=0))
     evals, evecs = np.linalg.eig(np.dot(normalised_data.T, normalised_data) * (1/float(m-1)))
 
-    evecs = evecs.T
-    print evecs[0]
+    # evecs = evecs.T
 
     # Sort eigenvectors
     idx = evals.argsort()[::-1]
-    eigenValues = evals[idx]
-    eigenVectors = evecs[:, idx]
+    eigenvalues = evals[idx]
+    eigenvectors = evecs[:, idx]
 
-    for i in range(len(eigenVectors)):
-        if eigenVectors[i][0] < 0:
-            eigenVectors[i] *= -1
+    eigenvectors = eigenvectors.T
 
-    # print eigenValues
-    # print eigenVectors[0]
-    # print eigenVectors
-    # print evals
-    # print sorted(evals, reverse=True)
-    # print evals.tolist()
-    # if sorted(evals, reverse=True) == eigenValues.tolist():
-    #     print 'hip hip'
+    for i in range(len(eigenvectors)):
+        if eigenvectors[i][0] < 0:
+            eigenvectors[i] *= -1
+
 
     # print np.shape(v)
 
     # print(np.mean(X, axis=0))
-    print eigenVectors[0]
-    return eigenVectors, eigenValues
+    return eigenvectors, eigenvalues
 
 # print mean_normalise(data['train_features'])
 # compute_pca(data['train_features'])

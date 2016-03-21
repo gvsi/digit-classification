@@ -3,22 +3,22 @@ import numpy as np
 import compute_pca
 import matplotlib.pyplot as plt
 
-
 data = scipy.io.loadmat('svhn.mat')
 
 X = data['train_features']
 
 eigen_vectors, eigen_values = compute_pca.compute_pca(X)
 
-# print eVals[0], eVals[1]
-E_2 = np.column_stack((eigen_vectors[0], eigen_vectors[1]))
+print(eigen_values)
 
-X_PCA = np.dot(X, E_2)
+cs = np.cumsum(eigen_values)
 
-x = X_PCA[:, 0]
-y = X_PCA[:, 1]
+print cs
+
+x = range(1, 101)
+y = cs
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
-ax.scatter(x, y, c=data['train_classes'])
+ax.scatter(x, y)
 plt.show()
