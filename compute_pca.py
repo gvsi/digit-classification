@@ -12,14 +12,6 @@ def mean_normalise(X):
     for row in X_trans:
         my_mean.append(sum(row)/m)
 
-    # my_mean = np.mean(X, axis=0)
-
-    # print X[0,0]
-    # print np.shape(my_mean)
-    # print my_mean[0]
-    # # print np.shape(my_mean)
-    # # print my_mean[:, np.newaxis];
-    # print (X - my_mean)[0,0]
     return X - my_mean  # subtracts mean from columns of matrices
 
 
