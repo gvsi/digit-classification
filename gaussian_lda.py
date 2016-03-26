@@ -23,22 +23,15 @@ def my_covariance(X):
 
     return np.dot(X.T, X) / float(m)
 
-# print my_covariance(data['train_features'])
-#
-# print np.cov(data['train_features'], rowvar=0)
 
-# print np.where(data['train_classes'][0] == 1)
-
-
-def gaussianMV(mu, covar, x):
+def lda(mu, covar, x):
     (d, b) = np.shape(covar)
 
     mu = np.reshape(mu, d, 1)
     x = np.reshape(x, d, 1)
 
-    x = x - mu
-
-    return 1 / np.sqrt((2 * np.pi) ** d * np.linalg.det(covar)) * np.exp(-0.5 * np.dot(np.dot(x.T, np.linalg.inv(covar)), x))
+    wkT = np.dot(mu.T, np.linalg.inv(covar))
+    return np.dot(wkT, x) - 0.5 * np.dot(wkT, mu)  # ignores likelihood
 
 
 covars = []
@@ -48,12 +41,15 @@ for i in range(1, 11):
     covars.append(my_covariance(features_classes))
     mus.append(my_mean(features_classes))
 
+shared_covar = np.sum(covars, 0) / 10
+
+
 confusion_matrix = np.zeros((10, 10))
 
 
 for i in range(len(data['test_features'])):
     actual_class = data['test_classes'][0][i]
-    ps = [gaussianMV(mus[c-1], covars[c-1], data['test_features'][i]) for c in range(1, 11)]
+    ps = [lda(mus[c-1], shared_covar, data['test_features'][i]) for c in range(1, 11)]
     predicted_class = np.argmax(ps) + 1
     confusion_matrix[actual_class-1][predicted_class-1] += 1
     # print gaussianMV(mm, mc, data['test_features'][i])
