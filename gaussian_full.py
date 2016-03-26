@@ -23,12 +23,6 @@ def my_covariance(X):
 
     return np.dot(X.T, X) / float(m)
 
-# print my_covariance(data['train_features'])
-#
-# print np.cov(data['train_features'], rowvar=0)
-
-# print np.where(data['train_classes'][0] == 1)
-
 
 def gaussianMV(mu, covar, x):
     (d, b) = np.shape(covar)
@@ -41,25 +35,28 @@ def gaussianMV(mu, covar, x):
     return 1 / np.sqrt((2 * np.pi) ** d * np.linalg.det(covar)) * np.exp(-0.5 * np.dot(np.dot(x.T, np.linalg.inv(covar)), x))
 
 
-covars = []
-mus = []
-for i in range(1, 11):
-    features_classes = data['train_features'][np.where(data['train_classes'][0] == i)]
-    covars.append(my_covariance(features_classes))
-    mus.append(my_mean(features_classes))
+def gaussian_full(train_features, train_classes, test_features, test_classes):
+    covars = []
+    mus = []
+    for i in range(1, 11):
+        features_classes = train_features[np.where(train_classes[0] == i)]
+        covars.append(my_covariance(features_classes))
+        mus.append(my_mean(features_classes))
 
-confusion_matrix = np.zeros((10, 10))
+    confusion_matrix = np.zeros((10, 10))
+
+    for i in range(len(test_features)):
+        actual_class = test_classes[0][i]
+        ps = [gaussianMV(mus[c-1], covars[c-1], test_features[i]) for c in range(1, 11)]
+        predicted_class = np.argmax(ps) + 1
+        confusion_matrix[actual_class-1][predicted_class-1] += 1
+
+    print confusion_matrix
+    print("Accuracy: ", np.sum(np.diag(confusion_matrix)) / np.sum(confusion_matrix))
 
 
-for i in range(len(data['test_features'])):
-    actual_class = data['test_classes'][0][i]
-    ps = [gaussianMV(mus[c-1], covars[c-1], data['test_features'][i]) for c in range(1, 11)]
-    predicted_class = np.argmax(ps) + 1
-    confusion_matrix[actual_class-1][predicted_class-1] += 1
-    # print gaussianMV(mm, mc, data['test_features'][i])
+def main():
+    gaussian_full(data['train_features'], data['train_classes'], data['test_features'], data['test_classes'])
 
-print confusion_matrix
-print("Accuracy: ", np.sum(np.diag(confusion_matrix)) / np.sum(confusion_matrix))
-
-# ps = np.array(ps)
-# print ps[np.where(data['test_classes'][0] == 1)]
+if __name__ == "__main__":
+    main()

@@ -35,4 +35,9 @@ def knn(train_features, train_classes, test_features, test_classes, k):
     print(confusion_matrix)
     print("Accuracy: ", np.sum(np.diag(confusion_matrix)) / np.sum(confusion_matrix))
 
-# knn(data['train_features'], data['train_classes'], data['test_features'], data['test_classes'], 1)
+
+def main():
+    knn(data['train_features'], data['train_classes'], data['test_features'], data['test_classes'], 1)
+
+if __name__ == "__main__":
+    main()
