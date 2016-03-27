@@ -24,17 +24,7 @@ def classify(train_features, train_classes, x, k):
         return labels_X[0]
 
 
-def knn(train_features, train_classes, test_features, k):
-
-    predictions = []
-    for i in range(len(test_features)):
-        predicted_class = classify(train_features, train_classes, test_features[i], k)
-        predictions.append(predicted_class)
-
-    return np.array(predictions)
-
-
-def knn2(train_features, train_classes, test_features, test_classes, k):
+def knn(train_features, train_classes, test_features, test_classes, k):
     confusion_matrix = np.zeros((10, 10))
     actual_classes = test_classes
 
@@ -44,6 +34,17 @@ def knn2(train_features, train_classes, test_features, test_classes, k):
 
     print(confusion_matrix)
     print("Accuracy", np.sum(np.diag(confusion_matrix)) / np.sum(confusion_matrix))
+
+
+# -- Used to get predictions for grid points when plotting decision boundaries --#
+def get_knn_predictions(train_features, train_classes, test_features, k=1):
+
+    predictions = []
+    for i in range(len(test_features)):
+        predicted_class = classify(train_features, train_classes, test_features[i], k)
+        predictions.append(predicted_class)
+
+    return np.array(predictions)
 
 
 def main():
