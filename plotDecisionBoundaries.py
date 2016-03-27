@@ -23,7 +23,7 @@ def plotDecisionBoundaries(train_features, train_classes, X, true_labels, label_
     # value, the more resolution the visualization will have, at the
     # expense of computational cost (we would need to classify more
     # data-points since the grid would be denser).
-    stepsize = 0.05
+    stepsize = 0.1
 
     #We obtain the grid vectors for the two dimensions we are plotting. 
     xx, yy = np.meshgrid(np.arange(x1, x2, stepsize), np.arange(y1, y2, stepsize))
@@ -31,10 +31,8 @@ def plotDecisionBoundaries(train_features, train_classes, X, true_labels, label_
     #We stack both dimensions into a matrix with two columns that will be fed to the classifier.
     gridX = np.c_[xx.ravel(), yy.ravel()]
 
-    print gridX
-    print gridX.shape
     # Classify every point in the grid. Adapt this part to your code of the classifiers:
-    grid_labels = classifier(train_features, train_classes, gridX, 1)
+    grid_labels = classifier(train_features, train_classes, gridX)
 
     # Reshape into the rectangle shape to be used in pcolormesh:
     grid_labels_reshaped = grid_labels.reshape(xx.shape)
