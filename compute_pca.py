@@ -1,9 +1,8 @@
 import scipy.io
 import numpy as np
-data = scipy.io.loadmat('svhn.mat')
 
 
-def mean_normalise(X):
+def my_mean(X):
     my_mean = []
     (m, n) = np.shape(X)
 
@@ -12,24 +11,15 @@ def mean_normalise(X):
     for row in X_trans:
         my_mean.append(sum(row)/m)
 
-    return X - my_mean  # subtracts mean from columns of matrices
+    return my_mean
 
 
 def compute_pca(X):
     (m, n) = np.shape(X)
 
-    normalised_data = mean_normalise(X)
+    X = X - my_mean(X)
 
-    # print(np.shape(X))
-    # print np.transpose(normalised_data)
-
-    # print np.shape(X), np.shape(np.transpose(X)), np.shape(np.dot(np.transpose(X), X))
-
-    # Compute eig of covariance matrix (vectorised)
-    # evals, evecs = np.linalg.eig(np.cov(normalised_data, rowvar=0))
-    evals, evecs = np.linalg.eig(np.dot(normalised_data.T, normalised_data) * (1/float(m-1)))
-
-    # evecs = evecs.T
+    evals, evecs = np.linalg.eig(np.dot(X.T, X) * (1/float(m-1)))
 
     # Sort eigenvectors
     idx = evals.argsort()[::-1]
@@ -38,15 +28,18 @@ def compute_pca(X):
 
     eigenvectors = eigenvectors.T
 
+    # Invert sign of eigenvectors with negative first element
     for i in range(len(eigenvectors)):
         if eigenvectors[i][0] < 0:
             eigenvectors[i] *= -1
 
-
-    # print np.shape(v)
-
-    # print(np.mean(X, axis=0))
     return eigenvectors, eigenvalues
 
-# print mean_normalise(data['train_features'])
-# compute_pca(data['train_features'])
+
+def main():
+    data = scipy.io.loadmat('svhn.mat')
+    evecs, evals = compute_pca(data['train_features'])
+    print evals
+
+if __name__ == "__main__":
+    main()
