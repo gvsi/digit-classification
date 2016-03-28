@@ -1,6 +1,5 @@
 import scipy.io
 import numpy as np
-data = scipy.io.loadmat('svhn.mat')
 
 
 def my_mean(X):
@@ -77,6 +76,7 @@ def get_gaussian_lda_predictions(train_features, train_classes, test_features):
 
 
 def main():
+    data = scipy.io.loadmat('svhn.mat')
     gaussian_lda(data['train_features'], data['train_classes'][0], data['test_features'], data['test_classes'][0])
 
 if __name__ == "__main__":

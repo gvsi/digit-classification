@@ -1,7 +1,6 @@
 import scipy.io
 import numpy as np
 
-data = scipy.io.loadmat('svhn.mat')
 
 def find_modes(lst):
     max_freq = max(map(lst.count, lst))
@@ -48,6 +47,7 @@ def get_knn_predictions(train_features, train_classes, test_features, k=1):
 
 
 def main():
+    data = scipy.io.loadmat('svhn.mat')
     knn(data['train_features'], data['train_classes'][0], data['test_features'], data['test_classes'][0], 1)
 
 if __name__ == "__main__":

@@ -44,11 +44,9 @@ def plotDecisionBoundaries(train_features, train_classes, X, true_labels, label_
     scas = []
     for (i,cla) in enumerate(label_names):
         classIndices = np.where(true_labels == i + 1)
-        # print i
-        # print classIndices
         classLabels = true_labels[classIndices]
         classFeats = X[classIndices]
-        scat = ax.scatter(classFeats[:, 0], classFeats[:, 1], s=30,edgecolor='black', color=matplotlib.cm.Set2(classLabels/10.), vmin=0, vmax=1)
+        scat = ax.scatter(classFeats[:, 0], classFeats[:, 1], s=30, edgecolor='black', color=matplotlib.cm.Set2(classLabels/10.), vmin=0, vmax=1)
         scas = scas + [scat]
 
     ax.legend(scas,label_names,loc=4)
