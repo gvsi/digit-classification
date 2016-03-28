@@ -1,6 +1,5 @@
 import scipy.io
 import numpy as np
-data = scipy.io.loadmat('svhn.mat')
 
 
 def my_mean(X):
@@ -32,7 +31,10 @@ def gaussianMV(mu, covar, x):
 
     x = x - mu
 
-    return 1 / np.sqrt((2 * np.pi) ** d * np.linalg.det(covar)) * np.exp(-0.5 * np.dot(np.dot(x.T, np.linalg.inv(covar)), x))
+    return -0.5 * np.dot(np.dot(x.T, np.linalg.inv(covar)), x) - 0.5 * np.log(np.linalg.det(covar))  # using log probabilities
+
+    # Alternatively use normal multivariate formula
+    # return 1 / np.sqrt((2 * np.pi) ** d * np.linalg.det(covar)) * np.exp(-0.5 * np.dot(np.dot(x.T, np.linalg.inv(covar)), x))
 
 
 def gaussian_full(train_features, train_classes, test_features, test_classes):
@@ -49,6 +51,8 @@ def gaussian_full(train_features, train_classes, test_features, test_classes):
         actual_class = test_classes[i]
         ps = [gaussianMV(mus[c-1], covars[c-1], test_features[i]) for c in range(1, 11)]
         predicted_class = np.argmax(ps) + 1
+        # print (i, predicted_class)
+        # print ps
         confusion_matrix[actual_class-1][predicted_class-1] += 1
 
     print confusion_matrix
@@ -75,6 +79,7 @@ def get_gaussian_full_predictions(train_features, train_classes, test_features):
 
 
 def main():
+    data = scipy.io.loadmat('svhn.mat')
     gaussian_full(data['train_features'], data['train_classes'][0], data['test_features'], data['test_classes'][0])
 
 if __name__ == "__main__":
