@@ -54,7 +54,8 @@ def get_knn_predictions(train_features, train_classes, test_features, k=1):
 def main():
     data = scipy.io.loadmat('svhn.mat')
     knn(data['train_features'], data['train_classes'][0], data['test_features'], data['test_classes'][0], 1)
-    #
+
+    # Uncomment to plot accuracies for different value of k
     # accuracies = [knn(data['train_features'], data['train_classes'][0], data['test_features'], data['test_classes'][0], i) for i in np.arange(1,40,2)]
     # x = np.arange(1,40,2)
     # y = accuracies
