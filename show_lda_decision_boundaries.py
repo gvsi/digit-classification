@@ -10,7 +10,7 @@ train_classes = data['train_classes'][0]
 test_classes = data['test_classes'][0]
 
 # Uncomment the following two lines to use PCA
-train_features = apply_pca(data['train_features'])
-test_features = apply_pca(data['test_features'])
+# train_features = apply_pca(data['train_features'])
+# test_features = apply_pca(data['test_features'])
 
 plotDecisionBoundaries(train_features, train_classes, test_features, test_classes, ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'], get_gaussian_lda_predictions)
