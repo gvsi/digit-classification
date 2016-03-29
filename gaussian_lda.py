@@ -65,11 +65,12 @@ def get_gaussian_lda_predictions(train_features, train_classes, test_features):
         mus.append(my_mean(features_classes))
 
     shared_covar = np.sum(covars, 0) / 10
+    shared_cov_inv = np.linalg.inv(shared_covar)
 
     predictions = []
 
     for i in range(len(test_features)):
-        ps = [lda(mus[c-1], shared_covar, test_features[i]) for c in range(1, 11)]
+        ps = [lda(mus[c-1], shared_cov_inv, test_features[i]) for c in range(1, 11)]
         predicted_class = np.argmax(ps) + 1
         predictions.append(predicted_class)
 

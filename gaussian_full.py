@@ -70,10 +70,14 @@ def get_gaussian_full_predictions(train_features, train_classes, test_features):
         covars.append(my_covariance(features_classes))
         mus.append(my_mean(features_classes))
 
+    # Precompute determinants and inverse of covariance matrix of each class
+    dets = [np.log(np.linalg.det(covar)) for covar in covars]
+    invs = [np.linalg.inv(covar) for covar in covars]
+
     predictions = []
 
     for i in range(len(test_features)):
-        ps = [gaussianMV(mus[c-1], covars[c-1], test_features[i]) for c in range(1, 11)]
+        ps = [gaussianMV(mus[c-1], dets[c-1], invs[c-1], test_features[i]) for c in range(1, 11)]
         predicted_class = np.argmax(ps) + 1
         predictions.append(predicted_class)
 
