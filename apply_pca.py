@@ -33,6 +33,5 @@ def apply_pca(X):
 def main():
     data = scipy.io.loadmat('svhn.mat')
     apply_pca(data['train_features'])
-
 if __name__ == "__main__":
     main()

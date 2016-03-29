@@ -7,18 +7,17 @@ data = scipy.io.loadmat('svhn.mat')
 
 X = data['train_features']
 
-eigen_vectors, eigen_values = compute_pca.compute_pca(X)
+eigenvectors, eigenvalues = compute_pca.compute_pca(X)
 
-print(eigen_values)
-
-cs = np.cumsum(eigen_values)
-
-print cs
+cs = np.cumsum(eigenvalues)
 
 x = range(1, 101)
 y = cs
 
+print cs
+
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
+ax.set_title('Cumulative variance')
 ax.scatter(x, y)
 plt.show()
