@@ -22,13 +22,8 @@ def my_covariance(X):
     return np.dot(X.T, X) / float(m)
 
 
-def lda(mu, covar, x):
-    (d, b) = np.shape(covar)
-
-    mu = np.reshape(mu, d, 1)
-    x = np.reshape(x, d, 1)
-
-    wkT = np.dot(mu.T, np.linalg.inv(covar))
+def lda(mu, shared_cov_inv, x):
+    wkT = np.dot(mu.T, shared_cov_inv)
     return np.dot(wkT, x) - 0.5 * np.dot(wkT, mu)  # ignores likelihood
 
 
@@ -41,17 +36,23 @@ def gaussian_lda(train_features, train_classes, test_features, test_classes):
         mus.append(my_mean(features_classes))
 
     shared_covar = np.sum(covars, 0) / 10
+    shared_cov_inv = np.linalg.inv(shared_covar)
 
+    # Print determinant of shared covariance matrix:
+    print "Determinant of shared covariance matrix: \ndet: {}, log(det): {}".format(np.linalg.det(shared_covar), np.log(np.linalg.det(shared_covar)))
+
+    # Initialise confusion matrix:
     confusion_matrix = np.zeros((10, 10))
 
     for i in range(len(test_features)):
         actual_class = test_classes[i]
-        ps = [lda(mus[c-1], shared_covar, test_features[i]) for c in range(1, 11)]
+        ps = [lda(mus[c-1], shared_cov_inv, test_features[i]) for c in range(1, 11)]
         predicted_class = np.argmax(ps) + 1
         confusion_matrix[actual_class-1][predicted_class-1] += 1
 
+    print "\nConfusion matrix:"
     print confusion_matrix
-    print("Accuracy", np.sum(np.diag(confusion_matrix)) / np.sum(confusion_matrix))
+    print "\nAccuracy: {}".format(np.sum(np.diag(confusion_matrix)) / np.sum(confusion_matrix))
 
 
 # -- Used to get predictions for grid points when plotting decision boundaries --#

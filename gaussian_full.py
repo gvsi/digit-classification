@@ -23,18 +23,10 @@ def my_covariance(X):
     return np.dot(X.T, X) / float(m)
 
 
-def gaussianMV(mu, covar, x):
-    (d, b) = np.shape(covar)
-
-    mu = np.reshape(mu, d, 1)
-    x = np.reshape(x, d, 1)
-
+def gaussianMV(mu, det, inv, x):
     x = x - mu
 
-    return -0.5 * np.dot(np.dot(x.T, np.linalg.inv(covar)), x) - 0.5 * np.log(np.linalg.det(covar))  # using log probabilities
-
-    # Alternatively use normal multivariate formula
-    # return 1 / np.sqrt((2 * np.pi) ** d * np.linalg.det(covar)) * np.exp(-0.5 * np.dot(np.dot(x.T, np.linalg.inv(covar)), x))
+    return -0.5 * np.dot(np.dot(x.T, inv), x) - 0.5 * det  # using log probabilities
 
 
 def gaussian_full(train_features, train_classes, test_features, test_classes):
@@ -45,18 +37,28 @@ def gaussian_full(train_features, train_classes, test_features, test_classes):
         covars.append(my_covariance(features_classes))
         mus.append(my_mean(features_classes))
 
+    # Print determinant of each class:
+    print "Determinants of covariance matrix of each class:"
+    for (i, covar) in enumerate(covars):
+        print "Class label {} -> det: {}, log(det): {}".format(i+1, np.linalg.det(covar), np.log(np.linalg.det(covar)))
+
+    # Precompute determinants and inverse of covariance matrix of each class
+    dets = [np.log(np.linalg.det(covar)) for covar in covars]
+    invs = [np.linalg.inv(covar) for covar in covars]
+
+    # Initialise confusion matrix:
     confusion_matrix = np.zeros((10, 10))
 
     for i in range(len(test_features)):
-        actual_class = test_classes[i]
-        ps = [gaussianMV(mus[c-1], covars[c-1], test_features[i]) for c in range(1, 11)]
+        # Compute probabilities for each class
+        ps = [gaussianMV(mus[c-1], dets[c-1], invs[c-1], test_features[i]) for c in range(1, 11)]
         predicted_class = np.argmax(ps) + 1
-        # print (i, predicted_class)
-        # print ps
+        actual_class = test_classes[i]
         confusion_matrix[actual_class-1][predicted_class-1] += 1
 
+    print "\nConfusion matrix:"
     print confusion_matrix
-    print("Accuracy", np.sum(np.diag(confusion_matrix)) / np.sum(confusion_matrix))
+    print "\nAccuracy: {}".format(np.sum(np.diag(confusion_matrix)) / np.sum(confusion_matrix))
 
 
 # -- Used to get predictions for grid points when plotting decision boundaries --#
